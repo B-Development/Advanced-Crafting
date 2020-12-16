@@ -24,7 +24,7 @@ namespace AdvancedCrating.Commands
 
         public List<string> Aliases => new List<string>();
 
-        public List<string> Permissions => new List<string> { "craft.storage" };
+        public List<string> Permissions => new List<string> { "craft" };
 
         private string Translate(string TranslationKey, params object[] Placeholders) =>
             Main.Instance.Translations.Instance.Translate(TranslationKey, Placeholders);
@@ -80,15 +80,18 @@ namespace AdvancedCrating.Commands
         private bool CraftItem(string nameOfRecipe, string[] command, IRocketPlayer caller, InteractableStorage storage, ushort rewardItem, IEnumerable<Ingredient> ingredients, string permission)
         {
             UnturnedPlayer player = (UnturnedPlayer)caller;
-            if(caller.HasPermission(permission))
+            if (command[0] != nameOfRecipe)
             {
-                if (command[0] != nameOfRecipe)
+                return true;
+            }
+            else if (nameOfRecipe == command[0])
+            {
+                if (!caller.GetPermissions().Any(p => p.Name == permission))
                 {
-                    return true;
+                    UnturnedChat.Say(caller, Translate("no-perm-for-craft"), Color.red);
                 }
-                else if (nameOfRecipe == command[0])
+                else if(caller.GetPermissions().Any(p => p.Name == permission))
                 {
-
                     var results = ingredients.Select(ingredient => new
                     {
                         ingredient.Item,
@@ -119,7 +122,7 @@ namespace AdvancedCrating.Commands
 
                     // Give reward.
                     ((UnturnedPlayer)caller).GiveItem(rewardItem, 1);
-                    UnturnedChat.Say(caller, Translate("Successful-Craft"), Color.green);
+                    UnturnedChat.Say(caller, Translate("successful-Craft"), Color.green);
                     return true;
                 }
                 return true;

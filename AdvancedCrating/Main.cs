@@ -14,18 +14,20 @@ namespace AdvancedCrating
             { "no_object", "No object was found in your line of sight." },
             { "storage_open", "Opened storage." },
             { "invalid_storage", "The object that you are looking at is not a storage unit." },
-            { "Successful-Craft", "Congratulations. You have Crafted the item." }
+            { "successful-Craft", "Congratulations. You have Crafted the item." },
+            {"no-perm-for-craft", "You do not have permission for this craft!" },
+            {"specify-recipe", "Please specify a recipe." },
+            {"please-add-ingredients", "Player add ingredients to the storage." },
+            {"recipe-doesnt-exist", "This recipe does not exist."}
         };
 
         protected override void Load()
         {
-            base.Load();
             Instance = this;
             Logger.Log($"{Name} {Assembly.GetName().Version} has been loaded", ConsoleColor.Yellow);
         }
         protected override void Unload()
         {
-            base.Unload();
             Logger.Log($"{Name} has been unloaded", ConsoleColor.Yellow);
         }
     }
