@@ -13,3 +13,4 @@ C:\Users\jack\source\repos\Rocket-Plugins\AdvancedCrating\obj\Debug\AdvancedCrat
 C:\Users\jack\source\repos\Rocket-Plugins\AdvancedCrating\obj\Debug\AdvancedCrating.csproj.CopyComplete
 C:\Users\jack\source\repos\Rocket-Plugins\AdvancedCrating\obj\Debug\AdvancedCrating.dll
 C:\Users\jack\source\repos\Rocket-Plugins\AdvancedCrating\obj\Debug\AdvancedCrating.pdb
+C:\Users\jack\source\repos\Rocket-Plugins\AdvancedCrating\bin\Debug\Newtonsoft.Json.dll

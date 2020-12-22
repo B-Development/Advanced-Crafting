@@ -31,6 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AdvancedZones">
+      <HintPath>..\lib\AdvancedZones.dll</HintPath>
+    </Reference>
     <Reference Include="Assembly-CSharp">
       <HintPath>..\lib\Assembly-CSharp.dll</HintPath>
     </Reference>
@@ -67,8 +70,10 @@
   <ItemGroup>
     <Compile Include="Config.cs" />
     <Compile Include="Main.cs" />
-    <Compile Include="Model\Region.cs" />
+    <Compile Include="Model\Upgrade.cs" />
+    <Compile Include="Model\Factory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

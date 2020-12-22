@@ -8,7 +8,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using AdvancedCrating.Extentions;
-using AdvancedCrating.Other;
+using AdvancedCrating.Other.Recipe;
+using AdvancedCrating.Other.Webhook;
 
 namespace AdvancedCrating.Commands
 {
@@ -28,7 +29,6 @@ namespace AdvancedCrating.Commands
 
         private string Translate(string TranslationKey, params object[] Placeholders) =>
             Main.Instance.Translations.Instance.Translate(TranslationKey, Placeholders);
-
         public void Execute(IRocketPlayer caller, string[] command)
         {
             var player = caller.Player();
@@ -45,7 +45,10 @@ namespace AdvancedCrating.Commands
             {
                 storage.isOpen = true;
                 storage.opener = caller.Player();
-                Main.Instance.Configuration.Instance.Recipes.ForEach(recipe => CraftItem(recipe.NameOfRecipe, command, caller, storage, recipe.RewardItem, recipe.Ingredients, recipe.Permission));
+                Main.Instance.Configuration.Instance.Recipes
+                    .Where(recipe => recipe.NameOfRecipe.Equals(command[0], StringComparison.InvariantCultureIgnoreCase))
+                    .ToList()
+                    .ForEach(recipe => CraftItem(caller, storage, recipe.RewardItem, recipe.Ingredients, recipe.Permissions));
 
                 player.inventory.isStoring = true;
                 player.inventory.isStorageTrunk = false;
@@ -77,57 +80,67 @@ namespace AdvancedCrating.Commands
             return null;
         }
 
-        private bool CraftItem(string nameOfRecipe, string[] command, IRocketPlayer caller, InteractableStorage storage, ushort rewardItem, IEnumerable<Ingredient> ingredients, string permission)
+        private void CraftItem(IRocketPlayer caller, InteractableStorage storage, ushort rewardItem, IEnumerable<Ingredient> ingredients, IEnumerable<Permission> permissions)
         {
             UnturnedPlayer player = (UnturnedPlayer)caller;
-            if (command[0] != nameOfRecipe)
+            if (caller.GetPermissions().Select(p => p.Name).Intersect(permissions.Select(p => p.Value).ToList()).Any())
             {
-                return true;
-            }
-            else if (nameOfRecipe == command[0])
-            {
-                if (!caller.GetPermissions().Any(p => p.Name == permission))
+                var results = ingredients.Select(ingredient => new
                 {
-                    UnturnedChat.Say(caller, Translate("no-perm-for-craft"), Color.red);
+                    ingredient.Item,
+                    ingredient.Amount,
+                    inventorySearches = storage.items.search(new List<InventorySearch>(), ingredient.Item, false, true)
+                });
+                if (!results.All(result => result.inventorySearches.Select(r => (int)r.jar.item.amount).Sum() >= result.Amount))
+                {
+                    return;
                 }
-                else if(caller.GetPermissions().Any(p => p.Name == permission))
+                results.ToList().ForEach(result =>
                 {
-                    var results = ingredients.Select(ingredient => new
-                    {
-                        ingredient.Item,
-                        ingredient.Amount,
-                        inventorySearches = storage.items.search(new List<InventorySearch>(), ingredient.Item, false, true)
-                    });
-                    if (!results.All(result => result.inventorySearches.Select(r => (int)r.jar.item.amount).Sum() >= result.Amount))
-                    {
-                        return false;
-                    }
-                    results.ToList().ForEach(result =>
-                    {
-                        // Delete items
-                        var amountToDelete = result.Amount;
+                    // Delete items
+                    var amountToDelete = result.Amount;
 
-                        result.inventorySearches.ForEach(inventorySearch =>
+                    result.inventorySearches.ForEach(inventorySearch =>
+                    {
+                        if (amountToDelete > 0)
                         {
-                            if (amountToDelete > 0)
-                            {
-                                var index = storage.items.getIndex(inventorySearch.jar.x, inventorySearch.jar.y);
-                                storage.items.removeItem(index);
-                                player.Inventory.closeStorage();
-                            }
-                        });
+                            var index = storage.items.getIndex(inventorySearch.jar.x, inventorySearch.jar.y);
+                            storage.items.removeItem(index);
+                            player.Inventory.closeStorage();
+                        }
                     });
+                });
 
-                    UpdateAndCloseStorage(player, storage);
+                UpdateAndCloseStorage(player, storage);
 
-                    // Give reward.
-                    ((UnturnedPlayer)caller).GiveItem(rewardItem, 1);
-                    UnturnedChat.Say(caller, Translate("successful-Craft"), Color.green);
-                    return true;
-                }
-                return true;
+                // Give reward.
+                ((UnturnedPlayer)caller).GiveItem(rewardItem, 1);
+                Main.Instance.Configuration.Instance.Webhook.ForEach(webhook => webhookSuccessConfig(webhook.SuccessColor, webhook.Enabled, webhook.Url, player, rewardItem));
+             
+                UnturnedChat.Say(caller, Translate("successful-Craft"), Color.green);
             }
-            return true;
+            else
+            {
+                Main.Instance.Configuration.Instance.Webhook.ForEach(webhook => webhookFailConfig(webhook.FailColor, webhook.Enabled, webhook.Url, player, rewardItem));
+                UnturnedChat.Say(caller, Translate("no-perm-for-craft"), Color.red);
+            }
+        }
+
+
+        private void webhookFailConfig(string FailColor, bool enabled, string webhookUrl, UnturnedPlayer player, ushort rewardItem)
+        {
+            if (enabled)
+            {
+                FailCraft(player, webhookUrl, FailColor, rewardItem);
+            }
+        }
+
+        private void webhookSuccessConfig(string SuccessColor, bool enabled, string webhookUrl, UnturnedPlayer player, ushort rewardItem)
+        {
+            if (enabled)
+            {
+                SuccessCraft(player, webhookUrl, SuccessColor, rewardItem);
+            }
         }
 
         private static void UpdateAndCloseStorage(UnturnedPlayer player, InteractableStorage storage)
@@ -138,6 +151,15 @@ namespace AdvancedCrating.Commands
             player.Inventory.updateItems(PlayerInventory.STORAGE, storage.items);
             player.Inventory.sendStorage();
             player.Inventory.closeStorage();
+        }
+        
+        private static void FailCraft(UnturnedPlayer player, string Url, string FailColor, ushort rewardItem)
+        {
+            DiscordHelper.FailCraftWebhook(player, Url, FailColor, rewardItem);
+        }
+        private static void SuccessCraft(UnturnedPlayer player, string Url, string SuccessColor, ushort rewardItem)
+        {
+            DiscordHelper.SuccessCraftWebhook(player, Url, SuccessColor, rewardItem);
         }
     }
 }

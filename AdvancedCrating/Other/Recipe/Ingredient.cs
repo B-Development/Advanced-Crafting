@@ -1,4 +1,4 @@
-﻿namespace AdvancedCrating.Other
+﻿namespace AdvancedCrating.Other.Recipe
 {
     public class Ingredient
     {

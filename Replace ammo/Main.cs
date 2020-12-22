@@ -10,6 +10,7 @@ using SDG.Unturned;
 using System;
 using System.Collections;
 using UnityEngine;
+using System.Linq;
 
 namespace Replace_ammo
 {
@@ -18,10 +19,25 @@ namespace Replace_ammo
 
         protected override void Unload()
         {
+            UnturnedPlayerEvents.OnPlayerInventoryUpdated -= OnPlayerInventoryUpdated;
         }
         protected override void Load()
         {
+            UnturnedPlayerEvents.OnPlayerInventoryUpdated += OnPlayerInventoryUpdated;
         }
+
+        private void OnPlayerInventoryUpdated(UnturnedPlayer player, InventoryGroup inventoryGroup, byte inventoryIndex, ItemJar itemJar)
+        {
+            Configuration.Instance.AmmoReplaces
+                .Where(ammoReplace => ammoReplace.Item == itemJar.item.id)
+                .ToList()
+                .ForEach(ammoReplace => Replace(ammoReplace.Ammo, ammoReplace.Item, player, itemJar, inventoryIndex));
+        }
+
+        private void Replace(ushort ammo, ushort item, UnturnedPlayer player, ItemJar itemJar, byte inventoryIndex)
+        {
+        }
+
         public override Rocket.API.Collections.TranslationList DefaultTranslations =>
             new Rocket.API.Collections.TranslationList
             {

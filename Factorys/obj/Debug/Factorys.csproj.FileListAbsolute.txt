@@ -1,0 +1,2 @@
+C:\Users\jack\source\repos\Rocket-Plugins\Factorys\obj\Debug\Factorys.csprojAssemblyReference.cache
+C:\Users\jack\source\repos\Rocket-Plugins\Factorys\obj\Debug\Factorys.csproj.CoreCompileInputs.cache

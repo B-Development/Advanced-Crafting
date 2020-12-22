@@ -1,27 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace AdvancedCrating.Other
+namespace AdvancedCrating.Other.Recipe
 {
     public class Recipe
     {
         public string NameOfRecipe { get; set; }
         public ushort RewardItem { get; set; }
-        public string Permission { get; set; }
+        public List<Permission> Permissions { get; set; }
         public List<Ingredient> Ingredients { get; set; }
 
         public Recipe()
         {
         }
 
-        public Recipe(string name, ushort rewardItem, string permission, params Ingredient[] ingredients)
+        public Recipe(string name, ushort rewardItem, List<string> permissions, params Ingredient[] ingredients)
         {
             NameOfRecipe = name;
             RewardItem = rewardItem;
-            Permission = permission;
+            Permissions = permissions.Select(p => new Permission(p)).ToList();
             Ingredients = new List<Ingredient>(ingredients);
         }
     }

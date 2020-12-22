@@ -37,6 +37,10 @@
     <Reference Include="Assembly-CSharp-firstpass">
       <HintPath>..\lib\Assembly-CSharp-firstpass.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Downloads\ExtraRestrictor-master\ExtraRestrictor-master\Libraries\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="Rocket.API">
       <HintPath>..\lib\Rocket.API.dll</HintPath>
     </Reference>
@@ -69,8 +73,13 @@
     <Compile Include="Config.cs" />
     <Compile Include="Extentions\PlayerExtensions.cs" />
     <Compile Include="Main.cs" />
-    <Compile Include="Other\Ingredient.cs" />
-    <Compile Include="Other\Recipe.cs" />
+    <Compile Include="Other\Levelling\Level.cs" />
+    <Compile Include="Other\Levelling\Levels.cs" />
+    <Compile Include="Other\Recipe\Ingredient.cs" />
+    <Compile Include="Other\Recipe\Permission.cs" />
+    <Compile Include="Other\Recipe\Recipe.cs" />
+    <Compile Include="Other\Webhook\DiscordHelper.cs" />
+    <Compile Include="Other\Webhook\Webhook.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />
