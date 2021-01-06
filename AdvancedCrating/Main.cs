@@ -18,7 +18,9 @@ namespace AdvancedCrating
             {"no-perm-for-craft", "You do not have permission for this craft!" },
             {"specify-recipe", "Please specify a recipe." },
             {"please-add-ingredients", "Player add ingredients to the storage." },
-            {"recipe-doesnt-exist", "This recipe does not exist."}
+            {"recipe-doesnt-exist", "This recipe does not exist."},
+            {"webhook_fail_recipe", "** [{0}](https://steamcommunity.com/profiles/{1}) ** \n failed to craft: {2}" },
+            {"webhook_success_recipe", "** [{0}](https://steamcommunity.com/profiles/{1}) ** \n succeeded to craft: {2}" }
         };
 
         protected override void Load()

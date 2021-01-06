@@ -29,7 +29,7 @@ namespace AdvancedCrating.Other.Webhook
                             JToken.FromObject(new
                             {
                                 color = Convert.ToInt32(FailColor, 16),
-                                description = "**" + player.DisplayName + " ** \n failed to craft `" + rewardItem + "`"
+                                description = "** " + player.DisplayName + " ** has failed to craft: `" + rewardItem + "` \n Player Steam Account: https://steamcommunity.com/profiles/" + player.CSteamID
                             })
                         }
                     }.ToString());
@@ -49,7 +49,7 @@ namespace AdvancedCrating.Other.Webhook
                             JToken.FromObject(new
                             {
                                 color = Convert.ToInt32(SuccessColor, 16),
-                                description = "**" + player.DisplayName + " ** \n succeeded to craft `" + rewardItem + "`"
+                                description = "** " + player.DisplayName + " ** has succedded to craft: `" + rewardItem + "` \n Player Steam Account: https://steamcommunity.com/profiles/" + player.CSteamID
                             })
                         }
                     }.ToString());
