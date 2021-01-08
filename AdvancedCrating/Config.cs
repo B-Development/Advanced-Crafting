@@ -1,7 +1,4 @@
-﻿
-using AdvancedCrating.Other.Levelling;
-using AdvancedCrating.Other.Recipe;
-using AdvancedCrating.Other.Webhook;
+﻿using AdvancedCrating.Other.Recipe;
 using Rocket.API;
 using System.Collections.Generic;
 using System.Xml.Serialization;
@@ -10,14 +7,9 @@ namespace AdvancedCrating
 {
     public class Config : IRocketPluginConfiguration
     {
-        public List<Webhook> Webhook { get; set; }
         public List<Recipe> Recipes { get; set; }
         public void LoadDefaults()
         {
-            Webhook = new List<Webhook>()
-            {
-                new Webhook(false, "Webhook Goes Here.", "#26D611", "#F53030")
-            };
 
             Recipes = new List<Recipe>()
             {

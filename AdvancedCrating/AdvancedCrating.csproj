@@ -73,13 +73,9 @@
     <Compile Include="Config.cs" />
     <Compile Include="Extentions\PlayerExtensions.cs" />
     <Compile Include="Main.cs" />
-    <Compile Include="Other\Levelling\Level.cs" />
-    <Compile Include="Other\Levelling\Levels.cs" />
     <Compile Include="Other\Recipe\Ingredient.cs" />
     <Compile Include="Other\Recipe\Permission.cs" />
     <Compile Include="Other\Recipe\Recipe.cs" />
-    <Compile Include="Other\Webhook\DiscordHelper.cs" />
-    <Compile Include="Other\Webhook\Webhook.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />

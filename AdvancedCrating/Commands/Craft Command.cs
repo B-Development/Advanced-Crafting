@@ -9,7 +9,6 @@ using UnityEngine;
 using System.Linq;
 using AdvancedCrating.Extentions;
 using AdvancedCrating.Other.Recipe;
-using AdvancedCrating.Other.Webhook;
 
 namespace AdvancedCrating.Commands
 {
@@ -39,7 +38,6 @@ namespace AdvancedCrating.Commands
                 player.inventory.closeStorage();
                 return;
             }
-
             var storage = GetInteractableStorage(caller);
             if (storage != null)
             {
@@ -58,7 +56,6 @@ namespace AdvancedCrating.Commands
                 player.inventory.closeStorage();
             }
         }
-
         private InteractableStorage GetInteractableStorage(IRocketPlayer caller)
         {
             var look = caller.Player().look;
@@ -115,34 +112,14 @@ namespace AdvancedCrating.Commands
 
                 // Give reward.
                 ((UnturnedPlayer)caller).GiveItem(rewardItem, 1);
-                Main.Instance.Configuration.Instance.Webhook.ForEach(webhook => webhookSuccessConfig(webhook.SuccessColor, webhook.Enabled, webhook.Url, player, rewardItem));
-             
+               
                 UnturnedChat.Say(caller, Translate("successful-Craft"), Color.green);
             }
             else
             {
-                Main.Instance.Configuration.Instance.Webhook.ForEach(webhook => webhookFailConfig(webhook.FailColor, webhook.Enabled, webhook.Url, player, rewardItem));
                 UnturnedChat.Say(caller, Translate("no-perm-for-craft"), Color.red);
             }
         }
-
-
-        private void webhookFailConfig(string FailColor, bool enabled, string webhookUrl, UnturnedPlayer player, ushort rewardItem)
-        {
-            if (enabled)
-            {
-                FailCraft(player, webhookUrl, FailColor, rewardItem);
-            }
-        }
-
-        private void webhookSuccessConfig(string SuccessColor, bool enabled, string webhookUrl, UnturnedPlayer player, ushort rewardItem)
-        {
-            if (enabled)
-            {
-                SuccessCraft(player, webhookUrl, SuccessColor, rewardItem);
-            }
-        }
-
         private static void UpdateAndCloseStorage(UnturnedPlayer player, InteractableStorage storage)
         {
             player.Inventory.isStoring = true;
@@ -151,15 +128,6 @@ namespace AdvancedCrating.Commands
             player.Inventory.updateItems(PlayerInventory.STORAGE, storage.items);
             player.Inventory.sendStorage();
             player.Inventory.closeStorage();
-        }
-        
-        private static void FailCraft(UnturnedPlayer player, string Url, string FailColor, ushort rewardItem)
-        {
-            DiscordHelper.FailCraftWebhook(player, Url, FailColor, rewardItem);
-        }
-        private static void SuccessCraft(UnturnedPlayer player, string Url, string SuccessColor, ushort rewardItem)
-        {
-            DiscordHelper.SuccessCraftWebhook(player, Url, SuccessColor, rewardItem);
         }
     }
 }
