@@ -6,7 +6,7 @@ namespace AdvancedCrating.Other.Recipe
     public class Recipe
     {
         public string NameOfRecipe { get; set; }
-        public ushort RewardItem { get; set; }
+        public List<Reward> Rewards {get; set; }
         public List<Permission> Permissions { get; set; }
         public List<Ingredient> Ingredients { get; set; }
 
